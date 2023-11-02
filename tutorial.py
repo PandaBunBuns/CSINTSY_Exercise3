@@ -11,6 +11,10 @@ import torchvision
 from torchvision import datasets
 import torchvision.transforms as transforms
 
+from tinyimagenet import TinyImageNet
+from pathlib import Path
+import logging
+
 # Set up warnings
 import warnings
 warnings.filterwarnings(
@@ -264,7 +268,7 @@ def print_size_of_model(model):
 # ImageNet Data
 
 def prepare_data_loaders(data_path):
-    normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
+    """ normalize = transforms.Normalize(mean=[0.485, 0.456, 0.406],
                                      std=[0.229, 0.224, 0.225])
     dataset = torchvision.datasets.ImageNet(
         data_path, split="train", transform=transforms.Compose([
@@ -279,7 +283,13 @@ def prepare_data_loaders(data_path):
             transforms.CenterCrop(224),
             transforms.ToTensor(),
             normalize,
-        ]))
+        ])) """
+    
+    logging.basicConfig(level=logging.INFO)
+
+    dataset_path="~/.torchvision/tinyimagenet/"
+    dataset = TinyImageNet(Path(dataset_path),split="train",transform=train_transform,imagenet_idx=True)
+    dataset_test = TinyImageNet(Path(dataset_path),split="val",transform=normalize_transform,imagenet_idx=True)
 
     train_sampler = torch.utils.data.RandomSampler(dataset)
     test_sampler = torch.utils.data.SequentialSampler(dataset_test)
